@@ -1,10 +1,10 @@
-# **💾 ⚙️ TP S5 : PERSISTANCE & WORKLOADS AVEC ÉTAT**
+#  **TP S5 : PERSISTANCE & WORKLOADS AVEC ÉTAT**
 
-## **✨ Synthèse de la Séance**
+## **Synthèse de la Séance**
 
 Ce document récapitule le travail effectué pour la Séance S5, couvrant le déploiement persistant de PostgreSQL et la documentation associée (Runbook).
 
-## **1\. Objectifs & Évaluation de la Séance 🎯**
+## **1\. Objectifs & Évaluation de la Séance** 
 
 Le but de ce TP était de maîtriser la gestion des applications avec état (StatefulSet) et la persistance dynamique (PVC).
 
@@ -38,7 +38,7 @@ kubectl get pods \-n workshop \-l app=postgres
 \# Vérification du PVC (doit être Bound)  
 kubectl get pvc \-n workshop
 
-## **3\. Procédure Opérationnelle (Runbook) 📑**
+## **3\. Procédure Opérationnelle (Runbook)** 
 
 Les commandes détaillées pour la gestion des données sont le livrable clé de ce TP.
 
@@ -52,12 +52,18 @@ export POD=$(kubectl \-n workshop get po \-l app=postgres \-o jsonpath='{.items\
 \# 2\. Exécuter le dump et sauvegarder localement  
 kubectl exec $POD \-n workshop \-- bash \-c 'pg\_dumpall \-U postgres' \> backup-S5-$(date \+%F).sql
 
+#### **Preuve de la Sauvegarde** 
+
+Conformément à l'exercice, le fichier de dump généré a été intégré au dépôt Git pour preuve de l'opération de sauvegarde.
+
+* **Fichier de Dump Committé :** `backup-test-2025-11-04.sql`
+
 ### **3.2. Restauration (Restore Logique)**
 
 Procédure pour réinjecter le dump SQL dans le conteneur via psql.
 
 \# Définir le nom du fichier de dump  
-FICHIER\_DUMP="backup-S5-AAAA-MM-JJ.sql" 
+FICHIER\_DUMP="`backup-test-2025-11-04.sql`"
 
 \# Exécuter la restauration  
 kubectl exec \-i $POD \-n workshop \-- bash \-c 'psql \-U postgres' \< $FICHIER\_DUMP  
