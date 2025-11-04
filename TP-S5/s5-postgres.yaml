@@ -1,0 +1,69 @@
+# 1. Secret pour les identifiants de la DB
+apiVersion: v1
+kind: Secret
+metadata:
+  name: pg-secret
+  namespace: workshop
+stringData:
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: supersecret
+---
+# 2. Service Headless (Nécessaire au StatefulSet)
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: workshop
+  labels:
+    app: postgres
+spec:
+  clusterIP: None
+  selector:
+    app: postgres
+  ports:
+  - name: pg
+    port: 5432
+    targetPort: 5432
+---
+# 3. StatefulSet PostgreSQL
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: workshop
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15 # 👈 CHANGEMENT : Passage temporaire à la version 15
+        ports:
+        - name: pg
+          containerPort: 5432
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pg-secret
+              key: POSTGRES_PASSWORD
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+  # 4. VolumeClaimTemplates (Provisioning dynamique)
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 8Gi
+      storageClassName: standard
