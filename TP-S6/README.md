@@ -8,7 +8,7 @@ Ce document récapitule les livrables pour la Séance S6, couvrant l'élasticit�
 | :---- | :---- | :---- |
 | **Manifests HPA** | s6-hpa-pdb.yaml | 3 pts |
 | **Manifests PDB** | s6-hpa-pdb.yaml | 2 pts |
-| **Fiche SLO/SLI** | s6-slo-sli.md | 3 pts |
+| **Fiche SLO/SLI** | README.md | 3 pts |
 | **Démonstration de Charge** | s6-load-test.js & Résultats | 2 pts |
 | *Note : La mise à l'échelle automatique (HPA) valide la majorité de ces points.* |  |  |
 
