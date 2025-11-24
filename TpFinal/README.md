@@ -1,4 +1,4 @@
-# DataPress – POC conteneurs & Kubernetes
+# DataPress – POC & Kubernetes
 
 Ce dépôt contient un Proof of Concept (POC) complet visant à moderniser la plateforme interne de DataPress en utilisant des technologies de conteneurisation et d'orchestration. Il établit une architecture moderne basée sur une API FastAPI et un front-end statique servi par NGINX, avec une gestion du cycle de vie allant du développement local (Docker Compose) au déploiement en recette (Kubernetes), incluant un prélude à une chaîne CI/CD.
 
