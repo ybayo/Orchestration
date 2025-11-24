@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: datapress-config
+  namespace: datapress-recette
+data:
+  APP_ENV: recette
+  APP_MESSAGE: "Bienvenue sur l'environnement de recette DataPress"
+  API_BASE_URL: "http://datapress-api.datapress-recette.svc.cluster.local"
+

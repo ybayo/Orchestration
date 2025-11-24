@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DataPress – POC</title>
+    <style>
+      :root {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #0a0a0a;
+        color: #f4f4f4;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      main {
+        background: #111;
+        padding: 2rem 3rem;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        width: min(90vw, 520px);
+      }
+      h1 {
+        margin-top: 0;
+        font-size: 2rem;
+      }
+      .version {
+        color: #4aa3ff;
+        font-weight: 600;
+      }
+      .status {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        background: #1b1b1b;
+        border: 1px solid #333;
+      }
+      code {
+        display: block;
+        margin-top: 0.5rem;
+        background: #050505;
+        padding: 0.5rem;
+        border-radius: 6px;
+        overflow-x: auto;
+      }
+      a {
+        color: #93d45b;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>DataPress – POC</h1>
+      <p class="version">Version : v1.0 POC</p>
+      <p>
+        Cette interface interroge l'API de démonstration pour vérifier que le
+        backend répond correctement. Le lien direct vers l'API est
+        <a id="api-link" href="#" target="_blank" rel="noreferrer noopener"
+          >chargement…</a
+        >.
+      </p>
+      <section class="status">
+        <strong>Dernière réponse API :</strong>
+        <code id="api-response">Chargement en cours…</code>
+      </section>
+    </main>
+
+    <script>
+      const resolvedApiUrl = window.API_BASE_URL || "${API_BASE_URL}";
+      const apiUrl =
+        resolvedApiUrl && resolvedApiUrl.trim().length > 0
+          ? resolvedApiUrl
+          : "http://localhost:8000";
+
+      const link = document.getElementById("api-link");
+      link.textContent = apiUrl;
+      link.href = apiUrl;
+
+      async function loadApiStatus() {
+        try {
+          const response = await fetch(`${apiUrl}/`);
+          if (!response.ok) {
+            throw new Error(`Code HTTP ${response.status}`);
+          }
+          const json = await response.json();
+          document.getElementById("api-response").textContent = JSON.stringify(
+            json,
+            null,
+            2
+          );
+        } catch (error) {
+          document.getElementById(
+            "api-response"
+          ).textContent = `Erreur lors de l'appel API : ${error.message}`;
+        }
+      }
+
+      loadApiStatus();
+      setInterval(loadApiStatus, 10000);
+    </script>
+  </body>
+</html>
+

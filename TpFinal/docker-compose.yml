@@ -1,0 +1,31 @@
+services:
+  api:
+    build:
+      context: ./app/api
+    image: datapress-api:dev
+    environment:
+      APP_ENV: docker-dev
+      APP_MESSAGE: "Bienvenue sur DataPress via Docker Compose"
+      APP_TOKEN: "compose-demo-token"
+    ports:
+      - "8000:8000"
+    networks:
+      - datapress
+
+  front:
+    build:
+      context: ./app/front
+    image: datapress-front:dev
+    environment:
+      API_BASE_URL: http://localhost:8000
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    networks:
+      - datapress
+
+networks:
+  datapress:
+    driver: bridge
+
