@@ -1,0 +1,12 @@
+# Utilise une image Node.js légère
+FROM node:18-alpine
+
+# Crée le répertoire de travail
+WORKDIR /usr/src/app
+
+# Installe http-server LOCALEMENT 
+RUN npm install http-server
+
+# Démarre le serveur avec npx (qui trouve l'outil localement)
+# Le chemin /usr/src/app pointe vers votre dossier ./frontend grâce au volume
+CMD ["npx", "http-server", "/usr/src/app", "-p", "80"]

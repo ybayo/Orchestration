@@ -1,0 +1,108 @@
+services:
+  # 1. Service API (Mise à l'échelle, Rolling Updates, et Limites de Ressources)
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    image: poll-api-image:latest
+    ports: ["8081:3000"]
+    environment:
+      NODE_ENV: production
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: poll_user
+      DB_PASSWORD: supersecretpassword 
+      DB_NAME: poll_db
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - db
+      - redis
+    deploy:
+      replicas: 3
+      restart_policy: { condition: on-failure }
+      # Configuration des Mises à Jour Progressives (Zéro Downtime)
+      update_config:
+        parallelism: 1 # Met à jour un seul réplica à la fois
+        delay: 10s     # Attend 10 secondes avant de passer au suivant
+        failure_action: rollback # Retourne à la version précédente en cas d'échec
+      # Limitation des Ressources (Qualité de Service)
+      resources:
+        limits:
+          cpus: '0.50'  # Limité à 50% d'un cœur CPU
+          memory: 256M # Limité à 256 Mo de RAM
+        reservations:
+          memory: 64M  # Garantit un minimum de 64 Mo de RAM
+    networks:
+      - poll_net 
+
+  # 2. Service Base de Données (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    deploy:
+      replicas: 1 
+      restart_policy: { condition: on-failure }
+    environment:
+      POSTGRES_USER: poll_user
+      POSTGRES_PASSWORD: supersecretpassword
+      POSTGRES_DB: poll_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - poll_net
+      
+  # 3. Service Cache (Redis)
+  redis:
+    image: redis:7-alpine
+    deploy:
+      replicas: 1
+      restart_policy: { condition: on-failure }
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 5
+    networks:
+      - poll_net
+
+  # 4. Service de Supervision/Administration : Adminer
+  adminer:
+    image: adminer:latest
+    ports: ["8085:8080"]
+    deploy:
+      replicas: 1
+    depends_on:
+      - db
+    networks:
+      - poll_net
+
+  # 5. Service Frontend Applicatif 
+  app_frontend:
+    build: { context: ./frontend, dockerfile: Dockerfile.frontend }
+    image: poll-frontend-image:latest
+    ports: ["8088:80"]
+    working_dir: /usr/src/app
+    volumes:
+      - ./frontend:/usr/src/app:ro
+    depends_on:
+      - api 
+    deploy:
+      replicas: 1
+    networks:
+      - poll_net
+      
+volumes:
+  db_data:
+  redis_data:
+    
+networks:
+  poll_net:
+    driver: overlay

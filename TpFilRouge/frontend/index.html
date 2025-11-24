@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet Docker Avancé - Validation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6f8;
+        }
+        .status-box {
+            background-color: #e5e7eb;
+            color: #1f2937;
+        }
+        .link-button {
+            transition: background-color 0.15s;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div class="max-w-xl w-full bg-white shadow-2xl rounded-xl p-8 space-y-8">
+        <h1 class="text-3xl font-bold text-gray-800 text-center border-b-4 border-blue-600 pb-4">
+            Démonstration : Architecture Microservices 5 Services
+        </h1>
+        
+        <p class="text-lg text-gray-700 text-center">
+            J'ai mis en place cette interface pour faciliter l'accès aux points de preuve principaux de mon projet. La validation se fait par l'accès direct aux ports des services exposés.
+        </p>
+
+        <div class="flex flex-col space-y-6 pt-4">
+            
+            <!-- 1. Test de la Robustesse (Healthcheck) -->
+            <div class="status-box p-5 rounded-lg border border-gray-300">
+                <p class="text-xl font-semibold text-gray-800 mb-2">1. Preuve de Robustesse (Healthcheck)</p>
+                <p class="text-sm text-gray-600 mb-4">
+                    Vérifiez le statut de l'API. Si le statut affiche "UP", cela confirme que l'API a bien attendu que la DB et Redis soient *healthy*.
+                </p>
+                <a href="http://localhost:8081/status" target="_blank" class="link-button block w-full text-center bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md">
+                    Tester l'API sur le port 8081 
+                </a>
+            </div>
+
+            <!-- 2. Test de la Supervision (Adminer) -->
+            <div class="status-box p-5 rounded-lg border border-gray-300">
+                <p class="text-xl font-semibold text-gray-800 mb-2">2. Preuve d'Administration et Supervision</p>
+                <p class="text-sm text-gray-600 mb-4">
+                    J'ai intégré Adminer pour permettre l'accès direct à la base de données (PostgreSQL). Cela démontre la gestion et le monitoring du contenu des services de données.
+                </p>
+                <a href="http://localhost:8085" target="_blank" class="link-button block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg shadow-md">
+                    Accéder à Adminer sur le port 8085
+					
+                </a>
+            </div>
+            
+        </div>
+        
+    </div>
+</body>
+</html>
